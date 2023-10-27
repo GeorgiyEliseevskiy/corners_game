@@ -57,6 +57,11 @@ public class UgolkiGame {
             // Проверяем, не завершена ли игра в результате текущего хода.
             lastGameStatus = winCriteria.checkForWinner(board, activePlayer);
 
+            // Вычисляем оценку доски после этого хода
+            int boardScore = evaluation(board, activePlayer);
+            System.out.println("Текущая оценка: " + boardScore);
+            // Теперь у вас есть оценка доски после этого хода, и вы можете использовать ее, сохранить или анализировать ее.
+
             // Передаем ход другому игроку.
             changeActivePlayer();
         } catch (IllegalArgumentException e) {
@@ -189,4 +194,82 @@ public class UgolkiGame {
             return blacksStartPoints;
         }
     }
+
+    public int evaluation(Board board, Player currentPlayer) {
+        int score = 0;
+
+        // Оценка за количество захваченных углов
+        int currentPlayerCornerCount = countPlayerCorners(currentPlayer);
+        int opponentCornerCount = countPlayerCorners(getOpponent(currentPlayer));
+
+        score = currentPlayerCornerCount - opponentCornerCount;
+
+        // Оценка за количество фигур на доске
+        int currentPlayerPieceCount = countPlayerPieces(currentPlayer);
+        int opponentPieceCount = countPlayerPieces(getOpponent(currentPlayer));
+
+        score += (currentPlayerPieceCount - opponentPieceCount);
+
+        return score;
+    }
+
+    /**
+     * Метод для подсчета количества фигур игрока на доске
+     */
+    public int countPlayerPieces(Player player) {
+        int pieceCount = 0;
+        // Перебираем все клетки на доске
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                Cell cell = board.getCellAt(x, y);
+                // Если клетка не пуста и фигура на ней принадлежит текущему игроку
+                if (!cell.isEmpty() && cell.getFigure().getColor() == player.getColor()) {
+                    pieceCount++;
+                }
+            }
+        }
+
+        return pieceCount;
+    }
+    // Метод для определения противника текущего игрока
+    public Player getOpponent(Player currentPlayer) {
+        if (currentPlayer == player1) {
+            return player2; // Если текущий игрок - player1, то противник - player2
+        } else {
+            return player1; // В противном случае, противник - player1
+        }
+    }
+
+
+    /**
+     * Метод для подсчета количества захваченных углов игроком
+     */
+    public int countPlayerCorners(Player player) {
+        int cornerCount = 0;
+
+        // Проверяем верхний левый угол
+        if (board.getCellAt(0, 0).getFigure() != null && board.getCellAt(0, 0).getFigure().getColor() == player.getColor()) {
+            cornerCount++;
+        }
+
+        // Проверяем верхний правый угол
+        if (board.getCellAt(0, 7).getFigure() != null && board.getCellAt(0, 7).getFigure().getColor() == player.getColor()) {
+            cornerCount++;
+        }
+
+        // Проверяем нижний левый угол
+        if (board.getCellAt(7, 0).getFigure() != null && board.getCellAt(7, 0).getFigure().getColor() == player.getColor()) {
+            cornerCount++;
+        }
+
+        // Проверяем нижний правый угол
+        if (board.getCellAt(7, 7).getFigure() != null && board.getCellAt(7, 7).getFigure().getColor() == player.getColor()) {
+            cornerCount++;
+        }
+
+        return cornerCount;
+    }
+
+
+
 }

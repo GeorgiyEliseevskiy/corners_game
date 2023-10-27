@@ -50,6 +50,7 @@ public class WinCheckResponse {
          * Игра завершена.
          * Оба игрока имеют одинаковое количество очков.
          */
-        DEAD_HEAT
+        DEAD_HEAT,
+        ONGOING
     }
 }
