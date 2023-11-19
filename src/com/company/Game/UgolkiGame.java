@@ -195,6 +195,11 @@ public class UgolkiGame {
         }
     }
 
+    /**
+     * @param board - Игровая доска
+     * @param currentPlayer - Текущий игрок
+     * @return
+     */
     public int evaluation(Board board, Player currentPlayer) {
         int score = 0;
 
